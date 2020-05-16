@@ -1,11 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
 import FolderOpenOutlinedIcon from '@material-ui/icons/FolderOpenOutlined';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Divider from '@material-ui/core/Divider';
@@ -74,6 +70,7 @@ const Menu = ({
         size='small'
       >
         <ToggleButton
+          value={''}
           onClick={handleMuteToggle}
         >
          { isMute && <VolumeOffOutlinedIcon />}
@@ -81,6 +78,7 @@ const Menu = ({
         </ToggleButton>
 
         <ToggleButton
+          value={''}
           onClick={handleOpenAudio}
         >
           <FolderOpenOutlinedIcon />

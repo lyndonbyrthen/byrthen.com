@@ -1,6 +1,8 @@
 import Matter from 'matter-js';
 import { default as appSS } from './styles';
 
+const toRad = Math.PI / 180;
+
 const {
     Engine,
     Render,
@@ -20,13 +22,15 @@ const {
 
 export default class BarAsset {
 
-    world = null;
     mapIdx = 0;
     minBarHeight = 3;
     barWidth = 20;
-    wheelRotation = 0;
+    barOffset = 0;
     yOffset = .75;
     barRes = 128;
+    rgb = [255, 0, 0];
+    rgbInterval = 0;
+    rainbow = [];
 
     set world(world) {
         this._world = world;
@@ -57,6 +61,30 @@ export default class BarAsset {
             centerX,
             centerY,
         } = this.getStageProps();
+
+        this.rainbow = [];
+
+        for (let i = 0; i < this.barRes; i++) {
+            const f = i / this.barRes;
+            // this.grayscale[i] = Math.round(f * 255);
+            const a = (1 - f) / .2;
+            const x = Math.floor(a);
+            const y = Math.floor(255 * (a - x));
+
+            let r, g, b;
+
+            switch (x) {
+                case 0: r = 255; g = y; b = 0; break;
+                case 1: r = 255 - y; g = 255; b = 0; break;
+                case 2: r = 0; g = 255; b = y; break;
+                case 3: r = 0; g = 255 - y; b = 255; break;
+                case 4: r = y; g = 0; b = 255; break;
+                case 5: r = 255; g = 0; b = 255; break;
+                default: break;
+            }
+
+            this.rainbow[i] = [r,g,b];
+        }
 
         this.bars = [];
 
@@ -127,23 +155,29 @@ export default class BarAsset {
             const barHeight = arr[i] > this.minBarHeight ? arr[i] : this.minBarHeight;
 
             let v = Vertices.fromPath('L 0 0 L ' + this.barWidth + ' 0 L ' + this.barWidth + ' ' + barHeight + ' L 0 ' + barHeight)
-            // Body.set(this.bars[i],{vertices:v}) 
             let y = HEIGHT * this.yOffset;
-            // let y = HEIGHT*this.yOffset-barHeight/2; 
 
-            /*let y = this.dataArray[i] > 20 ?this.dataArray[i] : 20;
-            y = HEIGHT*this.yOffset - y*this.yFactor;*/
+            // let rgba = [];
+            // rgba.push(Math.round(barHeight + 8 * (i / len)));
+            // rgba.push(Math.round(200 *(i / len)));
+            // rgba.push(182);
+            // rgba.push(.2);
 
-            let rgba = [];
+            const offSet = Math.abs(i + Math.floor(this.barOffset)) % len;
 
-            rgba.push(Math.round(barHeight + (22 * (i / len))));
-            rgba.push(Math.round(200 * (i / len)));
-            rgba.push(150)
-            rgba.push(.2)
+            const rgba = this.rainbow[offSet].concat();
+            rgba.push(.15);
 
-            this.bars[i].render.fillStyle = 'rgba(' + rgba.join(',') + ')'
+            this.bars[i].render.fillStyle = 'rgba(' + rgba.join(',') + ')';
 
-            Body.set(this.bars[i], { vertices: v, position: { x: this.bars[i].position.x, y: y } })
+            const x = this.bars[i].position.x;
+
+            Body.set(this.bars[i], { vertices: v, position: { x: x, y: y } })
+        }
+
+        this.barOffset += .2;
+        if (this.barOffset >= len) {
+            this.barOffset = 0;
         }
     }
 

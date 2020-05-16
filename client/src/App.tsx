@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import './App.css';
 import {
   BrowserRouter as Router,
   Switch,
@@ -62,7 +61,7 @@ const RootStage = styled.div`
   height: 100%;
 `;
 
-const AudioVisualizer = React.lazy(() => import('./apps/AudioVisualizer/AudioVisualizer'));
+const AudioVisualizer = React.lazy(() => import('./apps/AudioVisualizer'));
 
 const App = () => {
   return (

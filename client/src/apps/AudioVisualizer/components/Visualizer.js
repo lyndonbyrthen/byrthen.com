@@ -1,5 +1,4 @@
 import Matter from 'matter-js';
-import WheelAsset from './VisualizerAsset/WheelAsset';
 
 const {
   Engine,
@@ -68,9 +67,10 @@ class Visualizer {
 
   create = () => {
 
-    this.engine = Engine.create()
-    this.world = this.engine.world
-    this.world.gravity.y = 1
+    this.engine = Engine.create();
+    this.world = this.engine.world;
+    this.world.gravity.y = 1;
+
 
     this.render = Render.create({
       element: this._parent,
@@ -87,11 +87,11 @@ class Visualizer {
     Render.run(this.render)
 
     this.runner = Runner.create();
-    // Runner.run(this.runner, this.engine);
 
     this._asset.world = this.world;
 
     this._asset.addBars();
+
     this._asset.addBouncers();
 
     let bottom = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 30, window.innerWidth, 20, {
@@ -145,9 +145,6 @@ class Visualizer {
 
     World.add(this.world, this.mouseConstraint);
 
-    /*window.Runner = Runner
-    window.runner = this.runner
-    window.engine = this.engine*/
   }
 
   start = () => {
