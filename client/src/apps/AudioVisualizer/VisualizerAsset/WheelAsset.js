@@ -1,5 +1,6 @@
 import Matter from 'matter-js';
 import { default as appSS } from './styles';
+import { getRainbowArray, getRgbaStr } from './AssetUtils';
 
 const {
   Engine,
@@ -67,8 +68,6 @@ export default class WheelAsset {
 
     this.bars = [];
 
-
-
     this.radius = WIDTH > HEIGHT ? HEIGHT * .4 : WIDTH * .4
 
     const sides = 200, r = this.radius,
@@ -95,28 +94,7 @@ export default class WheelAsset {
 
     World.add(this._world, this.bars);
 
-    this.rainbow = [];
-
-    for (let i = 0; i < sides; i++) {
-      const f = i / sides;
-      const a = (1 - f) / .2;
-      const x = Math.floor(a);
-      const y = Math.floor(255 * (a - x));
-
-      let r, g, b;
-
-      switch (x) {
-        case 0: r = 255; g = y; b = 0; break;
-        case 1: r = 255 - y; g = 255; b = 0; break;
-        case 2: r = 0; g = 255; b = y; break;
-        case 3: r = 0; g = 255 - y; b = 255; break;
-        case 4: r = y; g = 0; b = 255; break;
-        case 5: r = 255; g = 0; b = 255; break;
-        default: break;
-      }
-
-      this.rainbow[i] = [r, g, b];
-    }
+    this.rainbow = getRainbowArray(sides);
   }
 
   addBouncers = () => {
@@ -128,14 +106,16 @@ export default class WheelAsset {
 
     this.bouncers = [];
 
-    let bcount = 35 * WIDTH / 1000;
+    let bcount = Math.floor(35 * WIDTH / 1000);
+    const rainbow = getRainbowArray(bcount);
 
     for (let i = 0; i < bcount; i++) {
+      
       this.bouncers.push(
         Bodies.circle(centerX, centerY, Common.random(5, 18), {
           restitution: 1,
           friction: 0,
-          render: appSS.ballStyle1
+          render: {...appSS.ballStyle1, strokeStyle:getRgbaStr(rainbow[i],.15)}
         })
       )
     }
@@ -174,10 +154,9 @@ export default class WheelAsset {
 
     for (let i=0; i<len; i++) {
       const offSet = Math.abs(i + Math.floor(this.barOffset)) % len;
-      const rgba = this.rainbow[offSet].concat();
-      rgba.push(.15);
-
-      this.bars[i].render.fillStyle = 'rgba(' + rgba.join(',') + ')';
+      const rgb = this.rainbow[offSet].concat();
+      
+      this.bars[i].render.fillStyle = getRgbaStr(rgb,.15);
     }
 
     for (let i = 0; i < len / 2; i++) {
@@ -189,12 +168,6 @@ export default class WheelAsset {
 
       const x = centerX + (r - barHeight / 2) * Math.cos(rad(i * ang + rota))
       const y = centerY + (r - barHeight / 2) * Math.sin(rad(i * ang + rota))
-
-      // const rgba = [];
-      // rgba.push(Math.round(350 * ((i) / this.bars.length)))
-      // rgba.push(Math.round(20 * ((i) / this.bars.length)));
-      // rgba.push(Math.round(barHeight + (300 * ((i) / this.bars.length))));
-      // rgba.push(.2)
 
       Body.setAngle(this.bars[i], rad(0))
       Body.set(this.bars[i], { vertices: v, position: { x: x, y: y } })
@@ -210,12 +183,6 @@ export default class WheelAsset {
 
       const x = centerX + (r - barHeight / 2) * Math.cos(rad(i * ang + rota));
       const y = centerY + (r - barHeight / 2) * Math.sin(rad(i * ang + rota));
-
-      // const rgba = [];
-      // rgba.push(Math.round(350 * ((len - i) / this.bars.length)));
-      // rgba.push(Math.round(20 * ((len - i) / this.bars.length)));
-      // rgba.push(Math.round(barHeight + (300 * ((len - i) / this.bars.length))));
-      // rgba.push(.2)
 
       Body.setAngle(this.bars[i], rad(0));
       Body.set(this.bars[i], { vertices: v, position: { x: x, y: y } });
@@ -245,11 +212,11 @@ export default class WheelAsset {
   resetOutOfBounds = (body) => {
     Body.set(body, { position: { x: window.innerWidth / 2, y: window.innerHeight / 2 } })
 
-    if (body.render.strokeStyle === appSS.ballStyle1.strokeStyle) {
-      body.render.strokeStyle = appSS.ballStyle2.strokeStyle;
-    } else {
-      body.render.strokeStyle = appSS.ballStyle1.strokeStyle;
-    }
+    // if (body.render.strokeStyle === appSS.ballStyle1.strokeStyle) {
+    //   body.render.strokeStyle = appSS.ballStyle2.strokeStyle;
+    // } else {
+    //   body.render.strokeStyle = appSS.ballStyle1.strokeStyle;
+    // }
   }
 
 }

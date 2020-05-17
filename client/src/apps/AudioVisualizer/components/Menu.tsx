@@ -8,13 +8,12 @@ import Divider from '@material-ui/core/Divider';
 import VolumeUpOutlinedIcon from '@material-ui/icons/VolumeUpOutlined';
 import VolumeOffOutlinedIcon from '@material-ui/icons/VolumeOffOutlined';
 
-const Root = styled(Paper)`
+const Stage = styled(Paper)`
   position: fixed;
   top: 70px;
   left: 15px;
   display: flex;
   flexWrap: wrap;
-  background-color:  rgba(225,225,225,.15) !important;
 `;
 
 
@@ -28,7 +27,6 @@ export type MenuPropType = {
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
   padding:5px;
-  background-color: transparent !important;
   button {
     border: none;
   }
@@ -47,7 +45,9 @@ const Menu = ({
 }: MenuPropType) => {
 
   return (
-    <Root variant="outlined">
+    <Stage 
+      variant='outlined'
+    >
 
       <StyledToggleButtonGroup
         size='small'
@@ -56,7 +56,7 @@ const Menu = ({
         onChange={handleVisChange}
         aria-label="visualizer selector"
       >
-        <ToggleButton value="wheel" aria-label="wheel">
+        <ToggleButton color='primary' value="wheel" aria-label="wheel">
           wheel
           </ToggleButton>
         <ToggleButton value="landscape" aria-label="landscape">
@@ -85,7 +85,7 @@ const Menu = ({
         </ToggleButton>
 
       </StyledToggleButtonGroup>
-    </Root>
+    </Stage>
   )
 
 }

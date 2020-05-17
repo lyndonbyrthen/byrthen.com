@@ -4,7 +4,7 @@ export default {
 
   'ballStyle1': {
     'fillStyle': 'transparent',
-    'strokeStyle': 'rgba(0,86,57,.15)',
+    'strokeStyle': 'rgba(15,120,30,.15)',
     'lineWidth': 6
   },
 

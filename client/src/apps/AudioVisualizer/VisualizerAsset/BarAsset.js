@@ -1,5 +1,6 @@
 import Matter from 'matter-js';
 import { default as appSS } from './styles';
+import { getRainbowArray, getRgbaStr } from './AssetUtils';
 
 const toRad = Math.PI / 180;
 
@@ -27,7 +28,7 @@ export default class BarAsset {
     barWidth = 20;
     barOffset = 0;
     yOffset = .75;
-    barRes = 128;
+    barRes = 129;
     rgb = [255, 0, 0];
     rgbInterval = 0;
     rainbow = [];
@@ -62,33 +63,11 @@ export default class BarAsset {
             centerY,
         } = this.getStageProps();
 
-        this.rainbow = [];
-
-        for (let i = 0; i < this.barRes; i++) {
-            const f = i / this.barRes;
-            // this.grayscale[i] = Math.round(f * 255);
-            const a = (1 - f) / .2;
-            const x = Math.floor(a);
-            const y = Math.floor(255 * (a - x));
-
-            let r, g, b;
-
-            switch (x) {
-                case 0: r = 255; g = y; b = 0; break;
-                case 1: r = 255 - y; g = 255; b = 0; break;
-                case 2: r = 0; g = 255; b = y; break;
-                case 3: r = 0; g = 255 - y; b = 255; break;
-                case 4: r = y; g = 0; b = 255; break;
-                case 5: r = 255; g = 0; b = 255; break;
-                default: break;
-            }
-
-            this.rainbow[i] = [r,g,b];
-        }
+        this.rainbow = getRainbowArray(this.barRes);
 
         this.bars = [];
 
-        this.barWidth = (WIDTH / this.barRes);
+        this.barWidth = WIDTH / (this.barRes * 2 - 1);
 
         for (let i = 0, x = 0; i < this.barRes; i++) {
 
@@ -98,7 +77,7 @@ export default class BarAsset {
                     fillStyle: appSS.barFillStyle,
                 }
             }))
-            x += this.barWidth
+            x += this.barWidth * 2;
         }
 
         World.add(this._world, this.bars);
@@ -121,6 +100,14 @@ export default class BarAsset {
         });
 
         this.bouncers = Composite.allBodies(pyramid);
+
+        const len = this.bouncers.length;
+
+        const rainbow = getRainbowArray(len);
+
+        this.bouncers.forEach((body, idx) => {
+            body.render.strokeStyle = getRgbaStr(rainbow[idx],.15);
+        });
 
         World.add(this._world, this.bouncers);
 
@@ -157,12 +144,6 @@ export default class BarAsset {
             let v = Vertices.fromPath('L 0 0 L ' + this.barWidth + ' 0 L ' + this.barWidth + ' ' + barHeight + ' L 0 ' + barHeight)
             let y = HEIGHT * this.yOffset;
 
-            // let rgba = [];
-            // rgba.push(Math.round(barHeight + 8 * (i / len)));
-            // rgba.push(Math.round(200 *(i / len)));
-            // rgba.push(182);
-            // rgba.push(.2);
-
             const offSet = Math.abs(i + Math.floor(this.barOffset)) % len;
 
             const rgba = this.rainbow[offSet].concat();
@@ -194,11 +175,11 @@ export default class BarAsset {
 
     resetOutOfBounds = (body) => {
         Body.set(body, { position: { x: Common.random(15, window.innerWidth - 15), y: 0 } });
-        if (body.render.strokeStyle === appSS.ballStyle1.strokeStyle) {
-            body.render.strokeStyle = appSS.ballStyle2.strokeStyle;
-        } else {
-            body.render.strokeStyle = appSS.ballStyle1.strokeStyle;
-        }
+        // if (body.render.strokeStyle === appSS.ballStyle1.strokeStyle) {
+        //     body.render.strokeStyle = appSS.ballStyle2.strokeStyle;
+        // } else {
+        //     body.render.strokeStyle = appSS.ballStyle1.strokeStyle;
+        // }
     }
 
 }

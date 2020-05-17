@@ -5,19 +5,25 @@ import Visualizer from './AudioVisualizer/components/Visualizer';
 import WheelAsset from './AudioVisualizer/VisualizerAsset/WheelAsset';
 import BarAsset from './AudioVisualizer/VisualizerAsset/BarAsset';
 import Menu from './AudioVisualizer/components/Menu';
+import { Paper } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 
-const Stage = styled.div`
+const Stage = styled(Paper)`
   position: absolute;
   width: 100%;
   height: 100%;
   
+  
+`;
+
+const Canvas = styled.div`
   canvas {
     left: 0;
     top: 0;
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 0;
   }
 `;
 
@@ -25,15 +31,9 @@ const Hidden = styled.div`
   visibility: hidden;
 `;
 
-const WarningBar = styled(Snackbar)`
-  .MuiPaper-root {
-    background-color: rgba(49,49,49,.5);
-  }
-`;
-
 const AudioVisualizer = () => {
 
-  const stageRef = useRef(null);
+  const canvasRef = useRef(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const audio = useMemo(() => new Audio(), []);
@@ -45,7 +45,7 @@ const AudioVisualizer = () => {
   const [isMute, setIsMute] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [warningMessage, setWarningMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const playAudio = useCallback(() => {
     (async function () {
@@ -55,19 +55,19 @@ const AudioVisualizer = () => {
           setIsMute(false);
         }
       } catch (e) {
-        setWarningMessage(String(e));
+        setErrorMessage(String(e));
         setIsOpen(true);
       }
     })();
-  }, [audio, audioSrc, setWarningMessage, setIsOpen]);
+  }, [audio, audioSrc, setErrorMessage, setIsOpen]);
 
   useEffect(() => {
-    vis.parent = stageRef.current;
+    vis.parent = canvasRef.current;
     return () => {
       vis.kill();
       audio.pause();
     }
-  }, [vis, audio, stageRef]);
+  }, [vis, audio, canvasRef]);
 
   //On asset change
   useEffect(() => {
@@ -168,7 +168,8 @@ const AudioVisualizer = () => {
   };
 
   return (
-    <Stage ref={stageRef}>
+    <Stage>
+      <Canvas ref={canvasRef} />
       <Menu
         handleOpenAudio={handleOpenAudio}
         handleVisChange={handleVisChange}
@@ -181,16 +182,19 @@ const AudioVisualizer = () => {
         <input ref={fileRef} onChange={handleChangeAudio} type="file" />
       </Hidden>
 
-      <WarningBar
+      <Snackbar
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'center',
         }}
         open={isOpen}
-        autoHideDuration={4000}
+        autoHideDuration={6000}
         onClose={handleClose}
-        message={warningMessage}
-      />
+      >
+        <MuiAlert onClose={handleClose} severity="error">
+          {errorMessage}
+        </MuiAlert>
+      </Snackbar>
 
     </Stage>
   )

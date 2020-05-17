@@ -8,14 +8,12 @@ import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
 
 const FixedButton = styled(Paper)`
-
   position: fixed;
   top: 15px;
   left: 15px;
 
   width: 40px;
   height: 40px;
-  background-color:  rgba(225,225,225,.15) !important;
 
   display: flex;
   align-items: center;
@@ -23,6 +21,13 @@ const FixedButton = styled(Paper)`
 
   cursor: pointer;
 `;
+
+const StyledMenu = styled(Menu)`
+  .MuiMenu-paper {
+      background-color: rgba(203, 239, 231, 0.85);
+  }
+`;
+
 const RootMenu = (props:any) => {
 
     const history = useHistory();
@@ -54,7 +59,7 @@ const RootMenu = (props:any) => {
                 <MenuOutlinedIcon />
             </FixedButton>
 
-            <Menu
+            <StyledMenu
                 id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
@@ -64,7 +69,7 @@ const RootMenu = (props:any) => {
                 <MenuItem data-key='audiovisualizer' onClick={handleClose}>Audio visualizer</MenuItem>
                 <MenuItem data-key='' onClick={handleClose}>Another app</MenuItem>
                 <MenuItem data-key='' onClick={handleClose}>Another app</MenuItem>
-            </Menu>
+            </StyledMenu>
         </div>
     );
 
