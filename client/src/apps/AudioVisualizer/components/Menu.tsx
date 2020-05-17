@@ -84,8 +84,6 @@ const Menu = ({
           <FolderOpenOutlinedIcon />
         </ToggleButton>
 
-        
-
       </StyledToggleButtonGroup>
     </Root>
   )

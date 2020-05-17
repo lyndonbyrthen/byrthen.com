@@ -21,7 +21,7 @@ module.exports = function () {
     entry: entries,
     output: {
       // The build folder.
-      path: paths.public_html,
+      path: paths.public,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: 'js/[name].js',

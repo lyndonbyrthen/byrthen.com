@@ -11,6 +11,7 @@ client/coverage
 # production
 client/build
 dist
+server/public
 
 # misc
 .DS_Store
