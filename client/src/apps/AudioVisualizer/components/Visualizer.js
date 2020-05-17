@@ -14,18 +14,18 @@ const {
   World,
   Bodies,
   Vertices,
-  Events
-} = Matter
+  Events,
+} = Matter;
 
 const vendors = ['webkit', 'moz'];
 for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
   window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
   window.cancelAnimationFrame =
-    window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+    window[vendors[x] + 'CancelAnimationFrame'] ||
+    window[vendors[x] + 'CancelRequestAnimationFrame'];
 }
 
 class Visualizer {
-
   refreshTime = 20;
   dataArray = new Uint8Array(256);
   isMute = true;
@@ -43,11 +43,11 @@ class Visualizer {
 
   setAnalyser = (analyser) => {
     this.analyser = analyser;
-  }
+  };
 
   setRecordedMap = (recordedMap) => {
     this.recordedMap = recordedMap;
-  }
+  };
 
   step = () => {
     if (this.paused) return;
@@ -63,14 +63,12 @@ class Visualizer {
       });
     }
     window.requestAnimationFrame(this.step);
-  }
+  };
 
   create = () => {
-
     this.engine = Engine.create();
     this.world = this.engine.world;
     this.world.gravity.y = 1;
-
 
     this.render = Render.create({
       element: this._parent,
@@ -79,12 +77,12 @@ class Visualizer {
         width: window.innerWidth,
         height: window.innerHeight,
         background: 'transparent',
-        wireframeBackground: "transparent",
+        wireframeBackground: 'transparent',
         wireframes: false,
-      }
-    })
+      },
+    });
 
-    Render.run(this.render)
+    Render.run(this.render);
 
     this.runner = Runner.create();
 
@@ -94,29 +92,32 @@ class Visualizer {
 
     this._asset.addBouncers();
 
-    let bottom = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 30, window.innerWidth, 20, {
-      isStatic: true,
-      render: { fillStyle: 'transparent' }
-    });
-    bottom.label = 'bwall'
+    let bottom = Bodies.rectangle(
+      window.innerWidth / 2,
+      window.innerHeight - 30,
+      window.innerWidth,
+      20,
+      {
+        isStatic: true,
+        render: { fillStyle: 'transparent' },
+      }
+    );
+    bottom.label = 'bwall';
 
     World.add(this.world, [
       bottom,
-      Bodies.rectangle(window.innerWidth / 2, -50, window.innerWidth, 20,
-        {
-          isStatic: true,
-          render: { fillStyle: 'transparent' }
-        }),
-      Bodies.rectangle(0, -10, 20, window.innerHeight * 2,
-        {
-          isStatic: true,
-          render: { fillStyle: 'transparent' }
-        }),
-      Bodies.rectangle(window.innerWidth, -10, 20, window.innerHeight * 2,
-        {
-          isStatic: true,
-          render: { fillStyle: 'transparent' }
-        })
+      Bodies.rectangle(window.innerWidth / 2, -50, window.innerWidth, 20, {
+        isStatic: true,
+        render: { fillStyle: 'transparent' },
+      }),
+      Bodies.rectangle(0, -10, 20, window.innerHeight * 2, {
+        isStatic: true,
+        render: { fillStyle: 'transparent' },
+      }),
+      Bodies.rectangle(window.innerWidth, -10, 20, window.innerHeight * 2, {
+        isStatic: true,
+        render: { fillStyle: 'transparent' },
+      }),
     ]);
 
     this.onCollisionStart = (event) => {
@@ -128,7 +129,7 @@ class Visualizer {
           this._asset.resetOutOfBounds(pair.bodyA);
         }
       }
-    }
+    };
 
     Events.on(this.engine, 'collisionStart', this.onCollisionStart);
 
@@ -138,32 +139,31 @@ class Visualizer {
       constraint: {
         stiffness: 0.2,
         render: {
-          visible: false
-        }
-      }
+          visible: false,
+        },
+      },
     });
 
     World.add(this.world, this.mouseConstraint);
-
-  }
+  };
 
   start = () => {
-    this.pause(false)
-  }
+    this.pause(false);
+  };
 
   pause = (bool = true) => {
-    if (bool === this.paused) return
-    this.paused = bool
+    if (bool === this.paused) return;
+    this.paused = bool;
     if (bool) {
       Runner.stop(this.runner);
-      window.cancelAnimationFrame(this.updateInterval)
+      window.cancelAnimationFrame(this.updateInterval);
       clearInterval(this.auditInterval);
     } else {
       Runner.run(this.runner, this.engine);
       this.updateInterval = window.requestAnimationFrame(this.step);
       this.auditInterval = setInterval(this._asset.auditBodies, 2000);
     }
-  }
+  };
 
   kill = () => {
     if (!this.engine) return;
@@ -176,8 +176,7 @@ class Visualizer {
     clearInterval(this.updateInterval);
     clearInterval(this.auditInterval);
     this.paused = true;
-  }
-
+  };
 }
 
 export default Visualizer;

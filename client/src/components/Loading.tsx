@@ -14,7 +14,6 @@ const Stage = styled.div`
   > * {
     width: 100%;
   }
-
 `;
 
 const Loading = () => {
@@ -23,6 +22,6 @@ const Loading = () => {
       <LinearProgress />
     </Stage>
   );
-}
+};
 
 export default Loading;

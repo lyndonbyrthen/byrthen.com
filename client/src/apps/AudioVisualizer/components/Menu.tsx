@@ -13,20 +13,26 @@ const Stage = styled(Paper)`
   top: 70px;
   left: 15px;
   display: flex;
-  flexWrap: wrap;
+  flexwrap: wrap;
 `;
 
-
 export type MenuPropType = {
-  handleOpenAudio: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  handleVisChange: (event: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => void;
-  handleMuteToggle: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleOpenAudio: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
+  handleVisChange: (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    value: any
+  ) => void;
+  handleMuteToggle: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
   isMute: boolean;
   assetId: string;
-}
+};
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-  padding:5px;
+  padding: 5px;
   button {
     border: none;
   }
@@ -36,58 +42,44 @@ const StyledDivider = styled(Divider)`
   height: auto !important;
 `;
 
-const Menu = ({ 
-  handleOpenAudio, 
-  handleVisChange, 
+const Menu = ({
+  handleOpenAudio,
+  handleVisChange,
   handleMuteToggle,
   isMute,
-  assetId, 
+  assetId,
 }: MenuPropType) => {
-
   return (
-    <Stage 
-      variant='outlined'
-    >
-
+    <Stage variant='outlined'>
       <StyledToggleButtonGroup
         size='small'
         value={assetId}
         exclusive
         onChange={handleVisChange}
-        aria-label="visualizer selector"
+        aria-label='visualizer selector'
       >
-        <ToggleButton color='primary' value="wheel" aria-label="wheel">
+        <ToggleButton color='primary' value='wheel' aria-label='wheel'>
           wheel
-          </ToggleButton>
-        <ToggleButton value="landscape" aria-label="landscape">
+        </ToggleButton>
+        <ToggleButton value='landscape' aria-label='landscape'>
           landscape
-          </ToggleButton>
+        </ToggleButton>
       </StyledToggleButtonGroup>
 
-      <StyledDivider orientation="vertical" />
+      <StyledDivider orientation='vertical' />
 
-      <StyledToggleButtonGroup
-        size='small'
-      >
-        <ToggleButton
-          value={''}
-          onClick={handleMuteToggle}
-        >
-         { isMute && <VolumeOffOutlinedIcon />}
-         { !isMute && <VolumeUpOutlinedIcon />}
+      <StyledToggleButtonGroup size='small'>
+        <ToggleButton value={''} onClick={handleMuteToggle}>
+          {isMute && <VolumeOffOutlinedIcon />}
+          {!isMute && <VolumeUpOutlinedIcon />}
         </ToggleButton>
 
-        <ToggleButton
-          value={''}
-          onClick={handleOpenAudio}
-        >
+        <ToggleButton value={''} onClick={handleOpenAudio}>
           <FolderOpenOutlinedIcon />
         </ToggleButton>
-
       </StyledToggleButtonGroup>
     </Stage>
-  )
-
-}
+  );
+};
 
 export default Menu;

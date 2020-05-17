@@ -24,55 +24,63 @@ const FixedButton = styled(Paper)`
 
 const StyledMenu = styled(Menu)`
   .MuiMenu-paper {
-      background-color: rgba(203, 239, 231, 0.85);
+    background-color: rgba(203, 239, 231, 0.85);
   }
 `;
 
-const RootMenu = (props:any) => {
+const RootMenu = (props: any) => {
+  const history = useHistory();
 
-    const history = useHistory();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleMenuClick = useCallback(
+    (event) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [setAnchorEl]
+  );
 
-    const handleMenuClick = useCallback((event) => {
-        setAnchorEl(event.currentTarget);
-    }, [setAnchorEl]);
+  const handleClose = useCallback(
+    (event) => {
+      setAnchorEl(null);
+      const path = event.target.getAttribute('data-key');
+      if (path === null) return;
 
-    const handleClose = useCallback((event) => {
-        setAnchorEl(null);
-        const path = event.target.getAttribute('data-key');
-        if (path === null) return;
+      const location = {
+        pathname: `/${path}`,
+        state: { fromDashboard: true },
+      };
+      history.push(location);
+      history.replace(location);
+    },
+    [setAnchorEl, history]
+  );
 
-        const location = {
-            pathname: `/${path}`,
-            state: { fromDashboard: true }
-        };
-        history.push(location);
-        history.replace(location);
-    }, [setAnchorEl, history]);
+  return (
+    <div>
+      <FixedButton variant='outlined' onClick={handleMenuClick}>
+        <MenuOutlinedIcon />
+      </FixedButton>
 
-    return (
-        <div>
-            <FixedButton
-                variant="outlined"
-                onClick={handleMenuClick}>
-                <MenuOutlinedIcon />
-            </FixedButton>
-
-            <StyledMenu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                <MenuItem data-key='audiovisualizer' onClick={handleClose}>Audio visualizer</MenuItem>
-                <MenuItem data-key='' onClick={handleClose}>Another app</MenuItem>
-                <MenuItem data-key='' onClick={handleClose}>Another app</MenuItem>
-            </StyledMenu>
-        </div>
-    );
-
-}
+      <StyledMenu
+        id='simple-menu'
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem data-key='audiovisualizer' onClick={handleClose}>
+          Audio visualizer
+        </MenuItem>
+        <MenuItem data-key='' onClick={handleClose}>
+          Another app
+        </MenuItem>
+        <MenuItem data-key='' onClick={handleClose}>
+          Another app
+        </MenuItem>
+      </StyledMenu>
+    </div>
+  );
+};
 
 export default RootMenu;

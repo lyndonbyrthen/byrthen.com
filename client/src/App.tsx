@@ -1,9 +1,5 @@
 import React, { Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import RootMenu from './components/RootMenu';
 import styled from 'styled-components';
 import Loading from './components/Loading';
@@ -11,8 +7,8 @@ import { themeMinty } from './config/Themes';
 import { ThemeProvider } from '@material-ui/styles';
 
 const RootStage = styled.div`
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -24,22 +20,21 @@ const App = () => {
   return (
     <div>
       <ThemeProvider theme={themeMinty}>
-
         <Router>
           <div>
             <RootStage>
               {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
               <Switch>
-                <Route path="/audiovisualizer">
-                  <Suspense fallback={<Loading/>}>
+                <Route path='/audiovisualizer'>
+                  <Suspense fallback={<Loading />}>
                     <AudioVisualizer />
                   </Suspense>
                 </Route>
-                <Route path="/app2">
+                <Route path='/app2'>
                   <div>App 2</div>
                 </Route>
-                <Route path="/app3">
+                <Route path='/app3'>
                   <div>App 3</div>
                 </Route>
               </Switch>
@@ -49,13 +44,10 @@ const App = () => {
           <nav>
             <RootMenu />
           </nav>
-
         </Router>
       </ThemeProvider>
-
-    </div >
-
+    </div>
   );
-}
+};
 
 export default App;

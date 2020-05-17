@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import Snackbar from '@material-ui/core/Snackbar';
 import Visualizer from './AudioVisualizer/components/Visualizer';
@@ -12,8 +18,6 @@ const Stage = styled(Paper)`
   position: absolute;
   width: 100%;
   height: 100%;
-  
-  
 `;
 
 const Canvas = styled.div`
@@ -32,7 +36,6 @@ const Hidden = styled.div`
 `;
 
 const AudioVisualizer = () => {
-
   const canvasRef = useRef(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -66,7 +69,7 @@ const AudioVisualizer = () => {
     return () => {
       vis.kill();
       audio.pause();
-    }
+    };
   }, [vis, audio, canvasRef]);
 
   //On asset change
@@ -116,51 +119,65 @@ const AudioVisualizer = () => {
       if (audio.paused) {
         setIsMute(true);
       }
-    }
+    };
     window.addEventListener('resize', handleResize);
     audio.addEventListener('ended', handleAudioPause);
     return () => {
       // console.log('on unmount')
       window.removeEventListener('resize', handleResize);
       audio.removeEventListener('ended', handleAudioPause);
-    }
+    };
   }, [vis, audio]);
 
   useEffect(() => {
     vis.isMute = isMute;
   }, [isMute, vis]);
 
-  const handleChangeAudio = useCallback((event) => {
-    const files = fileRef.current?.files;
-    if (!files?.[0]) return;
-    setAudioSrc(URL.createObjectURL(files[0]));
-  }, [fileRef]);
+  const handleChangeAudio = useCallback(
+    (event) => {
+      const files = fileRef.current?.files;
+      if (!files?.[0]) return;
+      setAudioSrc(URL.createObjectURL(files[0]));
+    },
+    [fileRef]
+  );
 
-  const handleVisChange = useCallback((event, value) => {
-    const assetId = value;
-    setAssetId(assetId);
-  }, [setAssetId]);
+  const handleVisChange = useCallback(
+    (event, value) => {
+      const assetId = value;
+      setAssetId(assetId);
+    },
+    [setAssetId]
+  );
 
-  const handleOpenAudio = useCallback((event) => {
-    fileRef.current?.click();
-  }, [fileRef]);
+  const handleOpenAudio = useCallback(
+    (event) => {
+      fileRef.current?.click();
+    },
+    [fileRef]
+  );
 
-  const handleMuteToggle = useCallback((event) => {
-    if (!audioSrc) {
-      setAudioSrc('/assets/Actraiser.mp3');
-      return;
-    }
+  const handleMuteToggle = useCallback(
+    (event) => {
+      if (!audioSrc) {
+        setAudioSrc('/assets/Actraiser.mp3');
+        return;
+      }
 
-    if (audio.paused) {
-      playAudio();
-    } else {
-      audio.pause();
-      setIsMute(true);
-    }
-  }, [audio, audioSrc, playAudio]);
+      if (audio.paused) {
+        playAudio();
+      } else {
+        audio.pause();
+        setIsMute(true);
+      }
+    },
+    [audio, audioSrc, playAudio]
+  );
 
-
-  const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
+  const handleClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -179,7 +196,7 @@ const AudioVisualizer = () => {
       />
 
       <Hidden>
-        <input ref={fileRef} onChange={handleChangeAudio} type="file" />
+        <input ref={fileRef} onChange={handleChangeAudio} type='file' />
       </Hidden>
 
       <Snackbar
@@ -191,14 +208,12 @@ const AudioVisualizer = () => {
         autoHideDuration={6000}
         onClose={handleClose}
       >
-        <MuiAlert onClose={handleClose} severity="error">
+        <MuiAlert onClose={handleClose} severity='error'>
           {errorMessage}
         </MuiAlert>
       </Snackbar>
-
     </Stage>
-  )
-
-}
+  );
+};
 
 export default AudioVisualizer;
