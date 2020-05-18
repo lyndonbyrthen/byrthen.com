@@ -24,10 +24,9 @@ const {
 export default class BarAsset {
   mapIdx = 0;
   minBarHeight = 3;
-  barWidth = 20;
+  barWidth = 5;
   barOffset = 0;
   yOffset = 0.75;
-  barRes = 129;
   rgb = [255, 0, 0];
   rgbInterval = 0;
   rainbow = [];
@@ -57,13 +56,16 @@ export default class BarAsset {
   addBars = () => {
     const { WIDTH, HEIGHT, centerX, centerY } = this.getStageProps();
 
-    this.rainbow = getRainbowArray(this.barRes);
+    let bcount = Math.floor(WIDTH / this.barWidth / 2);
+    bcount = bcount % 2 ? bcount : bcount + 1;
+
+    const spaceWidth = (WIDTH - this.barWidth * bcount) / (bcount - 1);
+
+    this.rainbow = getRainbowArray(bcount);
 
     this.bars = [];
 
-    this.barWidth = WIDTH / (this.barRes * 2 - 1);
-
-    for (let i = 0, x = 0; i < this.barRes; i++) {
+    for (let i = 0, x = 0; i < bcount; i++) {
       this.bars.push(
         Bodies.rectangle(x, 500, this.barWidth, this.minBarHeight, {
           isStatic: true,
@@ -72,7 +74,7 @@ export default class BarAsset {
           },
         })
       );
-      x += this.barWidth * 2;
+      x += this.barWidth + spaceWidth;
     }
 
     World.add(this._world, this.bars);

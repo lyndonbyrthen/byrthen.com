@@ -26,7 +26,7 @@ export default class WheelAsset {
   bouncers = [];
   mapIdx = 0;
   minBarHeight = 3;
-  barWidth = 20;
+  barWidth = 5;
   wheelRotation = 0;
   radius = 100;
   rainbow = [];
