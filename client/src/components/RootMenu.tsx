@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import Button from '@material-ui/core/Button';
 import MenuOutlinedIcon from '@material-ui/icons/MenuOutlined';
 import Menu from '@material-ui/core/Menu/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
+import { appsMeta } from '../apps/appsMeta';
 
 const FixedButton = styled(Paper)`
   position: fixed;
@@ -69,15 +69,13 @@ const RootMenu = (props: any) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem data-key='audiovisualizer' onClick={handleClose}>
-          Audio visualizer
-        </MenuItem>
-        <MenuItem data-key='' onClick={handleClose}>
-          Another app
-        </MenuItem>
-        <MenuItem data-key='' onClick={handleClose}>
-          Another app
-        </MenuItem>
+        {appsMeta.map((meta) => {
+          return (
+            <MenuItem key={meta.id} data-key={meta.id} onClick={handleClose}>
+              {meta.name}
+            </MenuItem>
+          );
+        })}
       </StyledMenu>
     </div>
   );

@@ -6,6 +6,7 @@ const webpack = require('webpack');
 
 
 const config = buildConfig();
+console.log('Buiding with the following config:');
 console.log(config);
 
 const compiler = webpack(config);

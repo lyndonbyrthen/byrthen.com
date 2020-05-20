@@ -15,6 +15,7 @@ const RootStage = styled.div`
 `;
 
 const AudioVisualizer = React.lazy(() => import('./apps/AudioVisualizer'));
+const GraphBuilder = React.lazy(() => import('./apps/GraphBuilder'));
 
 const App = () => {
   return (
@@ -31,11 +32,13 @@ const App = () => {
                     <AudioVisualizer />
                   </Suspense>
                 </Route>
-                <Route path='/app2'>
-                  <div>App 2</div>
+                <Route path='/graphbuilder'>
+                  <Suspense fallback={<Loading />}>
+                    <GraphBuilder />
+                  </Suspense>
                 </Route>
-                <Route path='/app3'>
-                  <div>App 3</div>
+                <Route path='*'>
+                  <div>404 not found</div>
                 </Route>
               </Switch>
             </RootStage>
