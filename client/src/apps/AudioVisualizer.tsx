@@ -41,9 +41,10 @@ const AudioVisualizer = () => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const audio = useMemo(() => new Audio(), []);
-  const audioCtx = useMemo(() => new AudioContext(), []);
   const vis = useMemo(() => new Visualizer(), []);
 
+  const [isUserInteraction, setIsUserInteraction] = useState(false);
+  const [audioCtx, setAudioCtx] = useState<AudioContext>();
   const [assetId, setAssetId] = useState('wheel');
   const [audioSrc, setAudioSrc] = useState('');
   const [isMute, setIsMute] = useState(true);
@@ -63,15 +64,19 @@ const AudioVisualizer = () => {
         setIsOpen(true);
       }
     })();
-  }, [audio, audioSrc, setErrorMessage, setIsOpen]);
+  }, [audioSrc]);
 
+  //Only initiate AudioContext after user interaction, otherwise chrome throws an error.
+  useEffect(()=>{
+    if (isUserInteraction) {
+      setAudioCtx(new AudioContext());
+    }
+  },[isUserInteraction]);
+
+  //On canvasRef instantiation
   useEffect(() => {
     vis.parent = canvasRef.current;
-    return () => {
-      vis.kill();
-      audio.pause();
-    };
-  }, [vis, audio, canvasRef]);
+  }, [canvasRef]);
 
   //On asset change
   useEffect(() => {
@@ -82,34 +87,36 @@ const AudioVisualizer = () => {
       vis.asset = new BarAsset();
       vis.pause(false);
     }
-  }, [assetId, vis]);
+  }, [assetId]);
 
   //On audioSrc change
   useEffect(() => {
     if (!audioSrc) return;
     audio.src = audioSrc;
     playAudio();
-  }, [audioSrc, audio, playAudio]);
+  }, [audioSrc, playAudio]);
 
+  //On audioCtx instantiation
   useEffect(() => {
+    if (!audioCtx) return;
     const src = audioCtx.createMediaElementSource(audio);
     const analyser = audioCtx.createAnalyser();
     src.connect(analyser);
     analyser.connect(audioCtx.destination);
     analyser.fftSize = 512;
     vis.setAnalyser(analyser);
-  }, [audio, vis, audioCtx]);
+  }, [audioCtx]);
 
+  //Execuated once on mount
   useEffect(() => {
+    // console.log('on mount')
+
     (async function () {
       const response = await fetch('./assets/recording.json');
       const recordedMap = await response.json();
       vis.setRecordedMap(recordedMap);
     })();
-  });
 
-  useEffect(() => {
-    // console.log('on mount')
     const handleResize = () => {
       vis.kill();
       vis.create();
@@ -121,24 +128,37 @@ const AudioVisualizer = () => {
         setIsMute(true);
       }
     };
+
     window.addEventListener('resize', handleResize);
     audio.addEventListener('ended', handleAudioPause);
+
     return () => {
       // console.log('on unmount')
+      vis.kill();
+      audio.pause();
       window.removeEventListener('resize', handleResize);
       audio.removeEventListener('ended', handleAudioPause);
     };
-  }, [vis, audio]);
+  }, []);
 
+  //On isMute change
   useEffect(() => {
     vis.isMute = isMute;
-  }, [isMute, vis]);
+  }, [isMute]);
 
   const handleChangeAudio = useCallback(
     (event) => {
       const files = fileRef.current?.files;
       if (!files?.[0]) return;
       setAudioSrc(URL.createObjectURL(files[0]));
+    },
+    [fileRef]
+  );
+
+  const handleOpenAudio = useCallback(
+    (event) => {
+      setIsUserInteraction(true);
+      fileRef.current?.click();
     },
     [fileRef]
   );
@@ -151,15 +171,11 @@ const AudioVisualizer = () => {
     [setAssetId]
   );
 
-  const handleOpenAudio = useCallback(
-    (event) => {
-      fileRef.current?.click();
-    },
-    [fileRef]
-  );
-
   const handleMuteToggle = useCallback(
     (event) => {
+
+      setIsUserInteraction(true);
+
       if (!audioSrc) {
         setAudioSrc('/assets/Actraiser.mp3');
         return;
@@ -172,7 +188,7 @@ const AudioVisualizer = () => {
         setIsMute(true);
       }
     },
-    [audio, audioSrc, playAudio]
+    [audioSrc, playAudio, setIsUserInteraction]
   );
 
   const handleClose = (

@@ -15,12 +15,15 @@ export function reducer(
   switch (action.type) {
     case 'on_navigate':
       const { path, history } = action.data;
+      if (path === null) return context;
+      
       const location = {
         pathname: `/${path}`,
         state: { fromDashboard: true },
       };
       history.push(location);
       history.replace(location);
+
       return {...context, state: { ...context.state, appId:path}};
     case '404':
       return context;
