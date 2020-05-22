@@ -36,6 +36,7 @@ const Hidden = styled.div`
 `;
 
 const AudioVisualizer = () => {
+
   const canvasRef = useRef(null);
   const fileRef = useRef<HTMLInputElement>(null);
 

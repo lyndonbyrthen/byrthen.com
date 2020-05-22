@@ -10,7 +10,7 @@ client/coverage
 
 # production
 client/build
-dist
+server/writable
 
 # misc
 .DS_Store

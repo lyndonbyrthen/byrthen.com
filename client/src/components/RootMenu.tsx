@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
 import { appsMeta } from '../apps/appsMeta';
+import { useRootContext } from '../RootControl';
 
 const FixedButton = styled(Paper)`
   position: fixed;
@@ -29,6 +30,9 @@ const StyledMenu = styled(Menu)`
 `;
 
 const RootMenu = (props: any) => {
+
+  const { dispatch } = useRootContext();
+
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -43,17 +47,15 @@ const RootMenu = (props: any) => {
   const handleClose = useCallback(
     (event) => {
       setAnchorEl(null);
-      const path = event.target.getAttribute('data-key');
-      if (path === null) return;
-
-      const location = {
-        pathname: `/${path}`,
-        state: { fromDashboard: true },
-      };
-      history.push(location);
-      history.replace(location);
+      dispatch({
+        type:'on_navigate',
+        data: {
+          path: event.target.getAttribute('data-key'),
+          history: history
+        }
+      });
     },
-    [setAnchorEl, history]
+    [setAnchorEl, history, dispatch]
   );
 
   return (

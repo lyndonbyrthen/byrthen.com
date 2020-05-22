@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Loading from './components/Loading';
 import { themeMinty } from './config/Themes';
 import { ThemeProvider } from '@material-ui/styles';
+import { RootControl } from './RootControl';
 
 const RootStage = styled.div`
   top: 0;
@@ -18,8 +19,9 @@ const AudioVisualizer = React.lazy(() => import('./apps/AudioVisualizer'));
 const GraphBuilder = React.lazy(() => import('./apps/GraphBuilder'));
 
 const App = () => {
+
   return (
-    <div>
+      <RootControl>
       <ThemeProvider theme={themeMinty}>
         <Router>
           <div>
@@ -49,7 +51,7 @@ const App = () => {
           </nav>
         </Router>
       </ThemeProvider>
-    </div>
+      </RootControl>
   );
 };
 
